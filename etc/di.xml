@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Mail\TransportInterface">
+        <plugin name="jn2_mail_transport" type="Jn2\AmazonSes\Plugin\Mail\Transport" sortOrder="0" disabled="false"/>
+    </type>
+</config>
