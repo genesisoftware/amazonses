@@ -88,13 +88,13 @@ class Transport
 
             $server = $this->scopeConfig->getValue('amazonses/configuration_option/host', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
 
-            $this->credentials = $this->credentials->create([
+            $credentials = $this->credentials->create([
                 'key' => $accesskey,
                 'secret' => $secretkey
             ]);
 
-            $this->ses = $this->ses->create(['args' =>
-                    ['credentials' => $this->credentials,
+            $ses = $this->ses->create(['args' =>
+                    ['credentials' => $credentials,
                         'version' => self::API_VERSION,
                         'region' => $server
                     ]
@@ -113,7 +113,7 @@ class Transport
             $msg = $this->createMessage($subject, $from, $to, $boundary, $body);
 
             try {
-                $result = $this->ses->sendRawEmail([
+                $result = $ses->sendRawEmail([
                     'Source' => $from,
                     'Destinations' => [$to],
                     'RawMessage' => [
@@ -164,7 +164,7 @@ Content-Type: text/html; charset=iso-8859-1
 {$body}
 
 EOE;
-        // Texto simples
+            // Texto simples
         } else {
             $msg .= <<<EOE
 --{$boundary}
