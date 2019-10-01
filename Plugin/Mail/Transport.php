@@ -109,8 +109,9 @@ class Transport
             $subject = $message->getHeaders()->get('subject')->getFieldValue();
             $body = $message->getBody();
             $boundary = sha1(rand() . time() . 'jn2');
+            $replyTo = $message->getReplyTo()->current()->getEmail();
 
-            $msg = $this->createMessage($subject, $from, $to, $boundary, $body);
+            $msg = $this->createMessage($subject, $from, $to, $boundary, $body,$replyTo);
 
             try {
                 $result = $ses->sendRawEmail([
@@ -139,16 +140,17 @@ class Transport
      * @param string $to
      * @param string $boundary
      * @param string $body
+     * @param $replyTo
      * @return string
      */
-    protected function  createMessage($subject, $from, $to, $boundary, $body) {
-
+    protected function  createMessage($subject, $from, $to, $boundary, $body,$replyTo) {
         $msg = <<<EOE
 Subject: {$subject}
 MIME-Version: 1.0
 Content-type: multipart/alternative; boundary="{$boundary}"
 To: {$to}
 From: {$from}
+Reply-To: {$replyTo}
 
 
 EOE;
@@ -178,3 +180,4 @@ EOE;
         return $msg;
     }
 }
+
