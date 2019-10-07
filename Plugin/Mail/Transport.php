@@ -109,7 +109,11 @@ class Transport
             $subject = $message->getHeaders()->get('subject')->getFieldValue();
             $body = $message->getBody();
             $boundary = sha1(rand() . time() . 'jn2');
-            $replyTo = $message->getReplyTo()->current()->getEmail();
+
+            $replyTo = $from;
+            if($message->getReplyTo()->current()){
+                $replyTo = $message->getReplyTo()->current()->getEmail();
+            }
 
             $msg = $this->createMessage($subject, $from, $to, $boundary, $body,$replyTo);
 
