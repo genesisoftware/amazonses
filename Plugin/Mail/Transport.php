@@ -10,6 +10,7 @@ use Aws\Credentials\CredentialsFactory;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
 use Zend\Mail\Message;
 use Magento\Framework\Encryption\EncryptorInterface;
+use Zend\Mime\Mime;
 
 /**
  * Class Transport
@@ -102,17 +103,16 @@ class Transport
             );
 
             $message = $subject->getMessage();
-            $message = Message::fromString($message->getRawMessage())->setEncoding('utf-8');
 
-            $from = $message->getHeaders()->get('from')->getFieldValue();
-            $to = $message->getHeaders()->get('to')->getFieldValue();
-            $subject = $message->getHeaders()->get('subject')->getFieldValue();
-            $body = $message->getBody();
+            $from = $message->getFrom()[0]->getEmail();
+            $to = $message->getTo()[0]->getEmail();
+            $subject = $message->getSubject();
+            $body = $message->getBody()->getParts()[0]->getRawContent();
             $boundary = sha1(rand() . time() . 'jn2');
 
             $replyTo = $from;
-            if($message->getReplyTo()->current()){
-                $replyTo = $message->getReplyTo()->current()->getEmail();
+            if(isset($message->getReplyTo()[0])){
+                $replyTo = $message->getReplyTo()[0]->getEmail();
             }
 
             $msg = $this->createMessage($subject, $from, $to, $boundary, $body,$replyTo);
@@ -184,4 +184,3 @@ EOE;
         return $msg;
     }
 }
-
