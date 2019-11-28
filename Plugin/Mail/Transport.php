@@ -157,30 +157,13 @@ From: {$from}
 Reply-To: {$replyTo}
 
 
-EOE;
-        // Se for HTML
-        if (strpos($body, '<html') !== false ||
-            strpos($body, '!DOCTYPE html') !== false ||
-            strpos($body, '<body') !== false)
-        {
-            $msg .= <<<EOE
 --{$boundary}
 Content-Type: text/html; charset=utf-8
 
 {$body}
 
 EOE;
-            // Texto simples
-        } else {
-            $msg .= <<<EOE
---{$boundary}
-Content-Type: text/plain;
 
-{$body}
-
-EOE;
-
-        }
         return $msg;
     }
 }
