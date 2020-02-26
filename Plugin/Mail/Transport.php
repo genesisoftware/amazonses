@@ -78,44 +78,25 @@ class Transport
         TransportInterface $subject,
         Closure $proceed
     ) {
-
         $enabled = $this->scopeConfig->isSetFlag('amazonses/configuration_option/enabled', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
         if ($enabled) {
-
-            $accesskey = $this->scopeConfig->getValue('amazonses/configuration_option/accesskey', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            $secretkey = $this->scopeConfig->getValue('amazonses/configuration_option/secretkey', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-            // Retira criptografia
-            $secretkey = $this->encryptor->decrypt($secretkey);
-
-            $server = $this->scopeConfig->getValue('amazonses/configuration_option/host', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
-
-            $credentials = $this->credentials->create([
-                'key' => $accesskey,
-                'secret' => $secretkey
-            ]);
-
-            $ses = $this->ses->create(['args' =>
-                    ['credentials' => $credentials,
-                        'version' => self::API_VERSION,
-                        'region' => $server
-                    ]
-                ]
-            );
+            $ses = $this->createAccess();
 
             $message = $subject->getMessage();
 
-            $from = $message->getFrom()[0]->getEmail();
-            $to = $message->getTo()[0]->getEmail();
+            $from = $this->createFrom($message);
+            $to = $this->createTo($message);
             $subject = $message->getSubject();
             $body = $message->getBody()->getParts()[0]->getRawContent();
             $boundary = sha1(rand() . time() . 'jn2');
 
-            $replyTo = $from;
             if(isset($message->getReplyTo()[0])){
-                $replyTo = $message->getReplyTo()[0]->getEmail();
+                $replyTo = $this->createReplyTo($message);
+            } else {
+                $replyTo = $from;
             }
 
-            $msg = $this->createMessage($subject, $from, $to, $boundary, $body,$replyTo);
+            $msg = $this->createMessage($subject, $from, $to, $boundary, $body, $replyTo);
 
             try {
                 $result = $ses->sendRawEmail([
@@ -138,6 +119,92 @@ class Transport
     }
 
     /**
+     * Cria From
+     *
+     * @param $message
+     * @return string
+     */
+    protected function createFrom($message) {
+        $from = '';
+        $nameFrom = $message->getFrom()[0]->getName();
+        if (!empty($nameFrom)) {
+            $from .= $nameFrom . ' <';
+        }
+        $from .= $message->getFrom()[0]->getEmail();
+        if(!empty($nameFrom)) {
+            $from .= '>';
+        }
+        return $from;
+    }
+
+    /**
+     * Cria To
+     *
+     * @param $message
+     * @return string
+     */
+    protected function createTo($message) {
+        $to = '';
+        $nameTo = $message->getTo()[0]->getName();
+        if (!empty($nameTo)) {
+            $to .= $nameTo . ' <';
+        }
+        $to .= $message->getTo()[0]->getEmail();
+        if(!empty($nameTo)) {
+            $to .= '>';
+        }
+        return $to;
+    }
+
+    /**
+     * Cria Reply To
+     *
+     * @param $message
+     * @return string
+     */
+    protected function createReplyTo($message) {
+        $replyTo = '';
+        $nameTo = $message->getReplyTo()[0]->getName();
+        if (!empty($nameTo)) {
+            $replyTo .= $nameTo . ' <';
+        }
+        $replyTo .= $message->getReplyTo()[0]->getEmail();
+        if(!empty($nameTo)) {
+            $replyTo .= '>';
+        }
+        return $replyTo;
+    }
+
+    /**
+     * Cria acesso à API do AmazonSES
+     *
+     * @return \Aws\Ses\SesClient
+     */
+    protected function createAccess() {
+        $accesskey = $this->scopeConfig->getValue('amazonses/configuration_option/accesskey', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+        $secretkey = $this->scopeConfig->getValue('amazonses/configuration_option/secretkey', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+        // Retira criptografia
+        $secretkey = $this->encryptor->decrypt($secretkey);
+
+        $server = $this->scopeConfig->getValue('amazonses/configuration_option/host', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+        $credentials = $this->credentials->create([
+            'key' => $accesskey,
+            'secret' => $secretkey
+        ]);
+
+        $ses = $this->ses->create(['args' =>
+                ['credentials' => $credentials,
+                    'version' => self::API_VERSION,
+                    'region' => $server
+                ]
+            ]
+        );
+        return $ses;
+    }
+
+    /**
      * Creates raw email message
      * @param string $subject
      * @param string $from
@@ -147,7 +214,7 @@ class Transport
      * @param $replyTo
      * @return string
      */
-    protected function  createMessage($subject, $from, $to, $boundary, $body,$replyTo) {
+    protected function createMessage($subject, $from, $to, $boundary, $body, $replyTo) {
         $msg = <<<EOE
 Subject: {$subject}
 MIME-Version: 1.0
