@@ -108,7 +108,6 @@ class Transport
                 ]);
             } catch (AwsException $e) {
                 // output error message if fails
-                echo $e->getMessage();
                 $this->logger->critical('The email was not sent. Error message: ' . $e->getAwsErrorMessage() . "\n", ['exception' => $e]);
             }
 
