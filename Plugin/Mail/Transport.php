@@ -1,5 +1,5 @@
 <?php
-namespace Jn2\AmazonSes\Plugin\Mail;
+namespace Genesisoft\AmazonSes\Plugin\Mail;
 
 use Closure;
 use Aws\Exception\AwsException;
@@ -14,7 +14,7 @@ use Zend\Mime\Mime;
 
 /**
  * Class Transport
- * @package Jn2\AmazonSes\Smtp\Mail
+ * @package Genesisoft\AmazonSes\Smtp\Mail
  */
 class Transport
 {
@@ -88,7 +88,7 @@ class Transport
             $to = $this->createTo($message);
             $subject = $message->getSubject();
             $body = $message->getBody()->getParts()[0]->getRawContent();
-            $boundary = sha1(rand() . time() . 'jn2');
+            $boundary = sha1(rand() . time() . 'genesisoft');
 
             if(isset($message->getReplyTo()[0])){
                 $replyTo = $this->createReplyTo($message);

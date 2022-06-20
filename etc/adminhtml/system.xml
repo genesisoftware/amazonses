@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <tab id="jn2" translate="label" sortOrder="0">
-            <label>Jn2</label>
+        <tab id="genesisoft" translate="label" sortOrder="0">
+            <label>Genesisoft</label>
         </tab>
         <section id="amazonses" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>AmazonSes</label>
-            <tab>jn2</tab>
-            <resource>Jn2_AmazonSes::configuration</resource>
+            <tab>genesisoft</tab>
+            <resource>Genesisoft_AmazonSes::configuration</resource>
             <group id="configuration_option" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Configuração da API Amazon SES</label>
                 <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">

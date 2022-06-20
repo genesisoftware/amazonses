@@ -1,5 +1,5 @@
 {
-  "name": "jn2/amazonses",
+  "name": "genesisoft/amazonses",
   "description": "Módulo para envio de email via API da Amazon",
   "require": {
     "aws/aws-sdk-php": "^2.4.9 || ^3.0"
@@ -8,9 +8,9 @@
   "license": "proprietary",
   "authors": [
     {
-      "name": "Jn2",
-      "email": "gabriel.palhares@jn2.com.br",
-      "homepage": "https://www.jn2.com.br"
+      "name": "Genesisoft",
+      "email": "genesis@genesisoft.com.br",
+      "homepage": "https://www.genesisoft.com.br"
     }
   ],
   "minimum-stability": "dev",
@@ -19,7 +19,7 @@
       "registration.php"
     ],
     "psr-4": {
-      "Jn2\\AmazonSes\\": ""
+      "Genesisoft\\AmazonSes\\": ""
     }
   }
 }

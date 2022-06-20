@@ -3,11 +3,11 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Jn2_AmazonSes::api" title="Jn2 AmazonSes Api" translate="title" sortOrder="45" />
+                <resource id="Genesisoft_AmazonSes::api" title="Genesisoft AmazonSes Api" translate="title" sortOrder="45" />
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="Jn2_AmazonSes::configuration" title="Jn2 AmazonSes"/>
+                            <resource id="Genesisoft_AmazonSes::configuration" title="Genesisoft AmazonSes"/>
                         </resource>
                     </resource>
                 </resource>
